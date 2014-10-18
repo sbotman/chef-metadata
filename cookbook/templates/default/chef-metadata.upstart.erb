@@ -6,7 +6,7 @@
 #    * recipe file: <%= @recipe_file %>
 # --------------------------------------------------------------
 
-description "Chef-StatsD"
+description "Chef Metadata Service"
 start on runlevel [2345]
 stop on runlevel [!2345]
 
@@ -15,4 +15,4 @@ export LANG
 
 respawn
 
-exec <%= @basedir %>/statsd-go <%= @params %> >> <%= @basedir %>/console.log
+exec <%= @basedir %>/chef-metadata <%= @params %> >> <%= @basedir %>/console.log

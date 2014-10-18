@@ -34,7 +34,7 @@ Attributes
     <td><tt>['chef-metadata']['install_dir']</tt></td>
     <td>String</td>
     <td>Installation path</td>
-    <td><tt>/opt/chef-statds</tt></td>
+    <td><tt>/opt/chef-metadata</tt></td>
   </tr>
   <tr>
     <td><tt>['chef-metadata']['url']</tt></td>
