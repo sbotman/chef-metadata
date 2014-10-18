@@ -5,14 +5,19 @@ import (
     "crypto/md5"
     "crypto/sha256"
     "fmt"
-    "os"
     "log"
     "sort"
     "net/http"
     "path/filepath"
+    "flag"
 )
 
-const filechunk = 8192    // we settle for 8KB
+var (
+	srvPath   = flag.String("path", "", "Path to chef client sources")
+	srvIP     = flag.String("address", "127.0.0.1", "IP for the service")
+	srvPort   = flag.String("port", "8090", "Port for the service")
+	srvURL    = flag.String("url", "http://your.server.com", "URL for the client download location")
+)
 
 func handler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprintf(w, "Chef Client Distribution Point")
@@ -26,12 +31,14 @@ func metadataHandler(w http.ResponseWriter, r *http.Request) {
     prodver := r.FormValue("pv")
     machine := r.FormValue("m")
     path := filepath.Join("client", product, prodver, machine)   
+
     dir, err := filepath.Abs(path)
     if err != nil {
       log.Fatal(err)
     }
-    if len(os.Args) >= 2 { 
-      dir = filepath.Join(os.Args[1], path) 
+
+    if *srvPath != "" { 
+      dir = filepath.Join(*srvPath, path) 
     }
 
     if version == "latest" {
@@ -54,7 +61,7 @@ func metadataHandler(w http.ResponseWriter, r *http.Request) {
       targetsha5 := sha256.Sum256(data)
       data = nil
 
-      fmt.Fprintf(w, "url http://artifacts.schubergphilis.com/chef/%s md5 %x sha256 %x", targetpath, targetmd5, targetsha5)
+      fmt.Fprintf(w, "url %s md5 %x sha256 %x", filepath.Join(*srvURL, targetpath), targetmd5, targetsha5)
     }
     
   } else {
@@ -63,9 +70,9 @@ func metadataHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+    flag.Parse()
     http.HandleFunc("/", handler)
     http.HandleFunc("/chef/", metadataHandler)
-    http.ListenAndServe(":8080", nil)
+    address := *srvIP + ":" + *srvPort
+    http.ListenAndServe(address, nil)
 }
-
-
