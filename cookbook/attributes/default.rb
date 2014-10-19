@@ -17,17 +17,17 @@
 # limitations under the License.
 #
 
-default['chef-metadata']['version']     = '0.1.2'
+default['chef-metadata']['version']     = '0.1.4'
 default['chef-metadata']['install_dir'] = '/opt/chef-metadata'
 
 if kernel['machine'] =~ /x86_64/
   default['chef-metadata']['url'] = "https://github.com/sbotman/chef-metadata/releases/download/#{node['chef-metadata']['version']}/chef-metadata-linux-amd64.tar.gz"
-  default['chef-metadata']['md5'] = '3f7cbaf6db45a7d5c2399c413a0e6387'
-  default['chef-metadata']['sha'] = '3b3fa5071a0cc7396cab24f97d40047d28f890d4'
+  default['chef-metadata']['md5'] = '2929931e44f6a8c45187e69fba645035'
+  default['chef-metadata']['sha'] = 'fe00d0bb2cbee8f2a172e9aa1c9ce491bb3fbfc1'
 else
   default['chef-metadata']['url'] = "https://github.com/sbotman/chef-metadata/releases/download/#{node['chef-metadata']['version']}/chef-metadata-linux-386.tar.gz"
-  default['chef-metadata']['md5'] = '5829b6281e3c63f955c53966e04acfd2'
-  default['chef-metadata']['sha'] = '10da63cd4e5c528d82abb06bda2152a4576858d8'
+  default['chef-metadata']['md5'] = '1f134b0ee391a8b438a41698407788e1'
+  default['chef-metadata']['sha'] = 'f3cece742f38386b3f074d1f9aa018ac3e500e3f'
 end
 
 # These options are used for the 'Default' section
