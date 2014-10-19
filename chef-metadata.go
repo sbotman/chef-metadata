@@ -24,8 +24,39 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 
+
+func downloadHandler(w http.ResponseWriter, r *http.Request) {
+    version := r.FormValue("v")
+    product := r.FormValue("p")
+    prodver := r.FormValue("pv")
+    machine := r.FormValue("m")
+    path := filepath.Join("client", product, prodver, machine)
+
+    dir, err := filepath.Abs(path)
+    if err != nil {
+      log.Fatal(err)
+    }
+
+    if *srvPath != "" {
+      dir = filepath.Join(*srvPath, path)
+    }
+
+    if version == "latest" {
+      version = "."
+    }
+
+    filelist, _ := filepath.Glob(dir + "/*" + version + "*")
+
+    if filelist != nil {
+      sort.Strings(filelist)
+      target := filelist[len(filelist) - 1]
+      targetpath := path + target[len(dir):]
+      targetredirect := filepath.Join(*srvURL, targetpath)
+      http.Redirect(w, r, targetredirect, http.StatusFound)
+    } 
+}
+
 func metadataHandler(w http.ResponseWriter, r *http.Request) {
-  if r.URL.Path[1:] == "chef/metadata" {
     version := r.FormValue("v")
     product := r.FormValue("p")
     prodver := r.FormValue("pv")
@@ -63,16 +94,13 @@ func metadataHandler(w http.ResponseWriter, r *http.Request) {
 
       fmt.Fprintf(w, "url %s md5 %x sha256 %x", filepath.Join(*srvURL, targetpath), targetmd5, targetsha5)
     }
-    
-  } else {
-    fmt.Fprintf(w, "Path: %s", r.URL.Path[1:] )
-  }
 }
 
 func main() {
     flag.Parse()
     http.HandleFunc("/", handler)
-    http.HandleFunc("/chef/", metadataHandler)
+    http.HandleFunc("/chef/metadata", metadataHandler)
+    http.HandleFunc("/chef/download", downloadHandler)
     address := *srvIP + ":" + *srvPort
     http.ListenAndServe(address, nil)
 }
