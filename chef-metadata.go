@@ -20,7 +20,7 @@ var (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Chef Client Distribution Handler v0.1.2")
+    fmt.Fprintf(w, "Chef Client Distribution Handler v0.1.4")
 }
 
 
@@ -51,7 +51,7 @@ func downloadHandler(w http.ResponseWriter, r *http.Request) {
       sort.Strings(filelist)
       target := filelist[len(filelist) - 1]
       targetpath := path + target[len(dir):]
-      targetredirect := filepath.Join(*srvURL, targetpath)
+      targetredirect := *srvURL + targetpath
       http.Redirect(w, r, targetredirect, http.StatusFound)
     } 
 }
@@ -92,7 +92,7 @@ func metadataHandler(w http.ResponseWriter, r *http.Request) {
       targetsha5 := sha256.Sum256(data)
       data = nil
 
-      fmt.Fprintf(w, "url %s md5 %x sha256 %x", filepath.Join(*srvURL, targetpath), targetmd5, targetsha5)
+      fmt.Fprintf(w, "url %s md5 %x sha256 %x", *srvURL + targetpath, targetmd5, targetsha5)
     }
 }
 
