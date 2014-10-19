@@ -20,7 +20,7 @@ var (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Chef Client Distribution Point")
+    fmt.Fprintf(w, "Chef Client Distribution Handler v0.1.2")
 }
 
 
