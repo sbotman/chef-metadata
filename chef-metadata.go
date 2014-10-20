@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 )
 
 var (
@@ -28,12 +29,23 @@ func (f files) Len() int {
 }
 
 func (f files) Less(i, j int) bool {
-	re := regexp.MustCompile(`.*?(\d+)\.(\d+)\.(\d+)-(\d+).*`)
+	re := regexp.MustCompile(`.*?(\d+)\.(\d+)\.(\d+)-?(\d+)?.*`)
 	parts_i := re.FindStringSubmatch(f[i])
 	parts_j := re.FindStringSubmatch(f[j])
 
-	for i := 1; i < len(parts_i); i++ {
-		if parts_i[i] < parts_j[i] {
+	for idx := 1; i < len(parts_i); i++ {
+		// Convert the part to a int
+		i, err := strconv.Atoi(parts_i[idx])
+		if err != nil {
+			return false
+		}
+		// Convert the part to a int
+		j, err := strconv.Atoi(parts_j[idx])
+		if err != nil {
+			return false
+		}
+		// Compare and do a descending sort
+		if j < i {
 			return true
 		}
 	}
